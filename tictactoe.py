@@ -1,5 +1,6 @@
 import json
-import os
+import os 
+import getpass
 def ia():
     t=1
     
@@ -25,9 +26,11 @@ def ia():
 
         if t%2==0 and t<=9:
             signe="X"
+            print("tour des X")
         elif t%2>0 and t<=9:
+            print("tour des O")
             signe="O"
-        p= int(input())
+        p = int(input("nouveau coup: "))
         if p==7:
             board[0][0]=signe
         elif p==8:
@@ -54,9 +57,9 @@ def ia():
             json.dump(board,f,ensure_ascii=False)
         if t == 9 or p==0:
             board = [
-                [" ", " ", " ", " ", " "],
-                [" ", " ", " ", " ", " "],
-                [" ", " ", " ", " ", " "]
+                ["*", " ", "*", " ", "*"],
+                ["*", " ", "*", " ", "*"],
+                ["*", " ", "*", " ", "*"]
             ]
             t=0
             print ("nouvelle partie !")
