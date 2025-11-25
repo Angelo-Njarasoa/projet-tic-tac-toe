@@ -1,20 +1,22 @@
 import json
 import os 
+import random
 def ia():
     t=1
     
     while t<=9:
-    
-        if os.path.exists("tictac.json") and os.path.getsize("tictac.json") > 0:
+        print(int(t))
+        if os.path.exists("tikctac.json") and os.path.getsize("tikctac.json") > 0:
             try:
-                with open("tictac.json", "r", encoding="utf-8") as f:
+                with open("tikctac.json", "r", encoding="utf-8") as f:
                     data = json.load(f)
             # Si le fichier contient une liste → ancien format → recréation
-                if not isinstance(data, dict) or "board" not in data or "dataposition" not in data:
+                if not isinstance(data, dict) or "board" not in data or "position_joueur" not in data or "position_ia" not in data:
                     raise ValueError("Ancien format détecté")
 
                 board = data["board"]
-                dataposition = data["dataposition"]
+                position_joueur = data["position_joueur"]
+                position_ia= data["position_ia"]
             except json.JSONDecodeError:
         # fichier corrompu → on repart d’une grille vide
                 board = [
@@ -22,20 +24,19 @@ def ia():
                     ["*", " ", "*", " ", "*"],
                     ["*", " ", "*", " ", "*"]
                 ]   
-                dataposition=[]
+                position_joueur=[]
+                position_ia=[]
         else:
             board = [
                 ["*", " ", "*", " ", "*"],
                 ["*", " ", "*", " ", "*"],
                 ["*", " ", "*", " ", "*"]               
             ]
-            dataposition=[]
+            position_joueur=[]
+            position_ia=[]
                          
-        if t%2==0 and t<=9:
-            signe="X"
-            print("tour des X")
-            p = int(input("nouveau coup: "))
-        elif t%2>0 and t<=9:
+        
+        if t%2>0 and t<=9:
             print("tour des O")
             signe="O"
             winning_sets = [
@@ -45,16 +46,43 @@ def ia():
             ]
 
             for winning_set in winning_sets:
-                existing = winning_set & set(dataposition)
+                existing = winning_set & set(position_ia)
                 missing = winning_set - existing
-                if missing:
-                    p = missing.pop()
+                existing2 = winning_set & set(position_joueur)
+                missing2 = winning_set - existing2
+
+                if len(missing)==1:
+                    coup = next(iter(missing))
+                    if coup not in position_joueur:
+                        p = coup
+                        break
+                elif len(missing2)==1:
+                    coup2 = next(iter(missing2))
+                    if coup2 not in position_ia:
+                        p = coup2
+                        break
+
+            else:
+                clavier = {1,2,3,4,5,6,7,8,9}
+                randomcoup = clavier - set(position_ia) - set(position_joueur)
+                p = random.choice(list(randomcoup))
+
+        if t%2==0 and t<=9:
+            signe="X"
+            print("tour des X")
+            p = int(input("nouveau coup: "))
+        elif t==1 :
+            print("tour des O")
+            signe="O"
+            p= random.randint(1, 9)
 
             
 
         
-        if p not in dataposition: 
-            dataposition.append(p)
+        if p not in position_joueur and t%2==0 : 
+            position_joueur.append(p)
+        if p not in position_ia and t%2>0 : 
+            position_ia.append(p)
         if p==7:
             board[0][0]=signe
         elif p==8:
@@ -76,8 +104,8 @@ def ia():
         
         for row in board:
             print(" ".join(row))
-        with open("tictac.json",'w',encoding='utf-8') as f:
-            json.dump({"board":board,"dataposition":dataposition},f,ensure_ascii=False)
+        with open("tikctac.json",'w',encoding='utf-8') as f:
+            json.dump({"board":board,"position_joueur":position_joueur,"position_ia":position_ia},f,ensure_ascii=False)
         
         if t == 9 or p==0:
             board = [
@@ -85,10 +113,11 @@ def ia():
                 ["*", " ", "*", " ", "*"],
                 ["*", " ", "*", " ", "*"]
             ]
-            dataposition=[]
+            position_joueur=[]
+            position_ia=[]
             t=0
             print ("nouvelle partie !")
         t+=1
-        with open("tictac.json",'w',encoding='utf-8') as f:
-            json.dump({"board":board,"dataposition":dataposition},f,ensure_ascii=False)
+        with open("tikctac.json",'w',encoding='utf-8') as f:
+            json.dump({"board":board,"position_joueur":position_joueur,"position_ia":position_ia},f,ensure_ascii=False)
 ia()
