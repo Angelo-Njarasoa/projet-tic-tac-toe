@@ -1,6 +1,7 @@
 import json
 import os 
 import random
+import 
 def ia():
     t=1
     
@@ -35,7 +36,7 @@ def ia():
             position_joueur=[]
             position_ia=[]
                          
-        
+        #partie gestion IA
         if t%2>0 and t<=9:
             print("tour des O")
             signe="O"
@@ -66,7 +67,7 @@ def ia():
                 clavier = {1,2,3,4,5,6,7,8,9}
                 randomcoup = clavier - set(position_ia) - set(position_joueur)
                 p = random.choice(list(randomcoup))
-
+        #gestion des coups du joueur
         if t%2==0 and t<=9:
             signe="X"
             print("tour des X")
@@ -75,14 +76,13 @@ def ia():
             print("tour des O")
             signe="O"
             p= random.randint(1, 9)
-
-            
-
         
+        #Mémoire coups joueur et Ia
         if p not in position_joueur and t%2==0 : 
             position_joueur.append(p)
         if p not in position_ia and t%2>0 : 
             position_ia.append(p)
+        #Assignation clavier numérique a la grille morpion
         if p==7:
             board[0][0]=signe
         elif p==8:
@@ -101,7 +101,7 @@ def ia():
             board[2][2] = signe
         elif p == 3:
             board[2][4] = signe
-        
+        #Gestion  et enregistrement des données de partie 
         for row in board:
             print(" ".join(row))
         with open("tikctac.json",'w',encoding='utf-8') as f:
